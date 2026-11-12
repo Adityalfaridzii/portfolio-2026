@@ -17,6 +17,10 @@ import { pathToFileURL } from "node:url";
 
 const ROOT = process.cwd();
 const PORT = 4199;
+/* node audit.mjs --url=https://example.com/   runs the same checks against a
+   deployed copy instead of starting a local server */
+const urlFlag = process.argv.find((a) => a.startsWith("--url="));
+const externalBase = urlFlag ? urlFlag.slice("--url=".length) : null;
 const PAGES = [
   ["index", ""],
   ["amb-copilot", "amb-copilot.html"],
@@ -148,8 +152,9 @@ if (!chromium) {
   process.exit(2);
 }
 
-const server = await startServer();
-const base = "http://127.0.0.1:" + PORT + "/";
+const server = externalBase ? null : await startServer();
+const base = externalBase || "http://127.0.0.1:" + PORT + "/";
+if (externalBase) console.log("auditing " + base + "  (no local server)");
 const browser = await chromium.launch();
 const failures = [];
 const rows = [];
@@ -267,7 +272,7 @@ if (printBg !== "rgb(255, 255, 255)") failures.push({ page: "print", issues: ["c
 await cvp.close();
 
 await browser.close();
-server.close();
+if (server) server.close();
 
 /* ---------------------------------------------------------------- report */
 
