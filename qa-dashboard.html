@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CF-02 · QA Dashboard — Aditya Rahman Al-Faridzi</title>
+<meta name="description" content="Case file: replacing a Master Calculation spreadsheet with a tested calculation and trade-trigger tool. 180 test blocks, 50 commits.">
+<meta name="theme-color" content="#f2f0e9">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2314140f'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='13' fill='%23f2f0e9' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preload" href="assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/style.css">
+<script>(function(){var r=document.documentElement,s=null,t=null;try{s=localStorage.getItem('af-motion');t=localStorage.getItem('af-theme')}catch(e){}var on=s?s==='on':!matchMedia('(prefers-reduced-motion: reduce)').matches;r.dataset.motion=on?'on':'off';if(on)r.classList.add('motion');if(t)r.dataset.theme=t})()</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a class="brand" href="index.html"><span class="monogram" aria-hidden="true">AF</span>
+        <span class="brand-name">Aditya R. Al-Faridzi</span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html#work" aria-current="page">Work</a>
+      <a href="index.html#numbers">Numbers</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#contact">Contact</a>
+      <a class="nav-keep" href="cv.html">CV</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <article>
+    <div class="wrap">
+      <div class="case-head">
+        <div class="crumbs">
+          <a href="index.html">Index</a><span aria-hidden="true">/</span>
+          <a href="index.html#work">Work</a><span aria-hidden="true">/</span>
+          <span>CF-02</span>
+        </div>
+        <h1>Replacing a spreadsheet that calculated other people's money.</h1>
+        <p class="summary">
+          A Master Calculation workbook decided whether the trading platform's numbers agreed with
+          expected values and with the OZ system — four trade methods, three numbers each, recalculated
+          by hand. One stale cell and the team chases a defect that does not exist. This is the tool
+          that took over the arithmetic, and the test map that keeps it honest.
+        </p>
+
+        <dl class="meta-grid">
+          <div class="meta-cell"><dt>Role</dt><dd>Build &amp; test, with Dya</dd></div>
+          <div class="meta-cell"><dt>Period</dt><dd>2026 — now</dd></div>
+          <div class="meta-cell"><dt>Surface</dt><dd>Web app · local-first</dd></div>
+          <div class="meta-cell"><dt>Status</dt><dd><span class="badge badge--ok">In use</span></dd></div>
+        </dl>
+      </div>
+
+      <div class="prose">
+        <h2>Problem</h2>
+        <p>
+          The Master Calculation file was the source of truth for "does the platform agree with
+          expected and with OZ". It was a spreadsheet, which means it had no types, no tests, and no
+          memory of what changed. When a number looked wrong, the honest answer was usually
+          <em>"recalculate it and see"</em>.
+        </p>
+        <p>
+          The failure mode is specific and nasty: <strong>a spreadsheet bug and a product bug look
+          identical from the outside.</strong> QA time goes into proving which one it is before the
+          real investigation can start.
+        </p>
+
+        <h2>What I built</h2>
+        <div class="decisions">
+          <div class="decision">
+            <span class="n">01</span>
+            <div>
+              <h3>Embedded Postgres, not a database server</h3>
+              <p>PGlite gives a real Postgres engine in-process. The tool runs on a QA laptop with one command — no shared staging DB to pollute, no credentials to hand around, no "works on my machine" divergence. The schemas are real; only the hosting is unusual.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">02</span>
+            <div>
+              <h3>Calculation is pure, and tested like it</h3>
+              <p>The arithmetic sits in plain modules — baseline, rounding, zero-flow, formula-input conversion — each with its own test file. Numeric code earns unit tests first, because a silent rounding difference is a wrong number nobody notices.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">03</span>
+            <div>
+              <h3>Comparing three truths, not one</h3>
+              <p>For each of the four trade methods the tool shows Expected, Dashboard and OZ side by side, so a mismatch points at <em>which</em> layer disagrees instead of just that something does.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">04</span>
+            <div>
+              <h3>Triggering trades needs friction in the right place</h3>
+              <p>The trigger page sends real trades, so it gets a default-value button, an environment banner that cannot be missed, and a mascot that makes the page unmistakably <em>not</em> a read-only screen. The dangerous action is the one that should feel different.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">05</span>
+            <div>
+              <h3>Rejected orders get a suggested fix, not just a red row</h3>
+              <p>Failed orders are detected and paired with a proposed corrective trade. The tool does not stop at "this failed" — the useful output for the person on shift is what to do next.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">06</span>
+            <div>
+              <h3>A smoke test that puts the configuration back</h3>
+              <p>An automated smoke path for trade execution covers the happy flow, a rejection and a cancellation. Each scenario is set up through the configuration API and the original settings are always restored afterwards — a smoke run must never leave an environment that someone else has to debug.</p>
+            </div>
+          </div>
+        </div>
+
+        <h2>Evidence</h2>
+        <p>
+          The suite is not a number pulled from a CI badge. It is <strong>180 test blocks across 25
+          files</strong>, and they cluster where the risk is:
+        </p>
+        <table class="ledger" data-keep-src>
+          <caption>QA Dashboard — test map, counted 12 Nov 2026</caption>
+          <thead>
+            <tr><th scope="col">Area</th><th scope="col">Files</th><th scope="col">Blocks</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="claim">Calculation &amp; formatting</td><td class="src">baseline, rounding, zero-flow, to-formula-input, grid-step, format</td><td class="val">29</td></tr>
+            <tr><td class="claim">Positions &amp; orders</td><td class="src">position, order, custom-multiplier, trade-check</td><td class="val">34</td></tr>
+            <tr><td class="claim">Trigger path</td><td class="src">trigger-sender, manual-trade, default-form, form, queue</td><td class="val">49</td></tr>
+            <tr><td class="claim">API, client, store</td><td class="src">api, client, store, app, static</td><td class="val">47</td></tr>
+            <tr><td class="claim">History &amp; baseline data</td><td class="src">trade-history, base, initial-values</td><td class="val">21</td></tr>
+            <tr><td class="claim"><strong>Total</strong></td><td class="src">25 files — 23 suites, 2 fixtures</td><td class="val">180</td></tr>
+          </tbody>
+        </table>
+        <p class="mono" style="color:var(--faint)">
+          25 files · 180 blocks · 50 commits · verified by grep and git on 12 Nov 2026
+        </p>
+
+        <h2>Result</h2>
+        <p>
+          The Master Calculation workbook is retired for daily work. The team checks Expected,
+          Dashboard and OZ in one screen, triggers trades with the environment visible, and gets a
+          suggested correction when an order is rejected. The how-to documentation ships with the tool,
+          written for the people who use it rather than for the people who built it.
+        </p>
+
+        <h2>What I would do differently</h2>
+        <ul>
+          <li><strong>A browser-level test for the trigger flow.</strong> The logic is tested hard, but
+            the click-to-send path deserves one end-to-end test that fails if the button ever fires
+            against the wrong environment.</li>
+          <li><strong>Run the smoke test from a CLI, not the app.</strong> It exists and restores its own
+            configuration; a terminal one-liner would let it run in CI where a browser is inconvenient.
+            That is the next step, not a rewrite.</li>
+          <li><strong>Test names as documentation.</strong> The file names are clear; the block names
+            inside are not always. A reader should learn the rule from the test title alone.</li>
+        </ul>
+      </div>
+
+      <nav class="case-nav" aria-label="Case files">
+        <a class="btn btn--quiet" href="amb-copilot.html"><span aria-hidden="true">←</span> CF-01 AMB Copilot</a>
+        <a class="btn" href="automation.html">Next: CF-03 Playwright suite <span class="arrow" aria-hidden="true">→</span></a>
+      </nav>
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap foot-inner">
+    <span>© <span data-year>2026</span> Aditya Rahman Al-Faridzi</span>
+    <span>No secrets, no internal documents, no company data on this page.</span>
+    <a href="index.html">Index</a>
+  </div>
+</footer>
+
+<script src="assets/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CF-03 · Playwright revamp suite — Aditya Rahman Al-Faridzi</title>
+<meta name="description" content="Case file: 102 Playwright UI tests across 11 spec files for a configuration revamp, built on page objects and fixtures.">
+<meta name="theme-color" content="#f2f0e9">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2314140f'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='13' fill='%23f2f0e9' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preload" href="assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/style.css">
+<script>(function(){var r=document.documentElement,s=null,t=null;try{s=localStorage.getItem('af-motion');t=localStorage.getItem('af-theme')}catch(e){}var on=s?s==='on':!matchMedia('(prefers-reduced-motion: reduce)').matches;r.dataset.motion=on?'on':'off';if(on)r.classList.add('motion');if(t)r.dataset.theme=t})()</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a class="brand" href="index.html"><span class="monogram" aria-hidden="true">AF</span>
+        <span class="brand-name">Aditya R. Al-Faridzi</span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html#work" aria-current="page">Work</a>
+      <a href="index.html#numbers">Numbers</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#contact">Contact</a>
+      <a class="nav-keep" href="cv.html">CV</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <article>
+    <div class="wrap">
+      <div class="case-head">
+        <div class="crumbs">
+          <a href="index.html">Index</a><span aria-hidden="true">/</span>
+          <a href="index.html#work">Work</a><span aria-hidden="true">/</span>
+          <span>CF-03</span>
+        </div>
+        <h1>A regression net thin enough to keep, wide enough to catch.</h1>
+        <p class="summary">
+          A configuration revamp across role, user, login, five configuration screens, dashboard and
+          company — every one of them a screen where the wrong setting becomes a wrong trade. Manual
+          retest of all of it each release does not happen; a suite that runs in CI does.
+        </p>
+
+        <dl class="meta-grid">
+          <div class="meta-cell"><dt>Role</dt><dd>Design, build, maintain</dd></div>
+          <div class="meta-cell"><dt>Period</dt><dd>2026 — now</dd></div>
+          <div class="meta-cell"><dt>Surface</dt><dd>Web · GitLab CI</dd></div>
+          <div class="meta-cell"><dt>Status</dt><dd><span class="badge badge--ok">In CI</span></dd></div>
+        </dl>
+      </div>
+
+      <div class="prose">
+        <h2>Problem</h2>
+        <p>
+          The revamp changed configuration screens that the trading platform depends on. Regression
+          here is not cosmetic: a role that keeps a permission it should have lost, or a symbol
+          setting that saves but does not apply, is a production incident with a UI that looks fine.
+        </p>
+        <p>
+          The suite had to answer one question well: <strong>when this goes red, does the reader know
+          what broke within a minute?</strong> That constraint drove every structural choice below.
+        </p>
+
+        <h2>What I built</h2>
+        <div class="decisions">
+          <div class="decision">
+            <span class="n">01</span>
+            <div>
+              <h3>Locators live apart from pages</h3>
+              <p>Every screen has a page object, and every selector lives in a matching locator file. A markup change touches one locator file, not twelve specs — and the diff of a locator file reads like a changelog of the UI.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">02</span>
+            <div>
+              <h3>Fixtures so a spec starts where the test starts</h3>
+              <p>Auth and page objects are injected as fixtures. A spec is five lines of intent instead of twenty lines of setup, which is the difference between a suite people read and a suite people skip.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">03</span>
+            <div>
+              <h3>Test data is named, not inlined</h3>
+              <p>Each module has a variables file: roles, users, symbols, trading priorities. The same data drives several tests, so "why did these four fail together" has one answer.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">04</span>
+            <div>
+              <h3>Screenshots are evidence, not decoration</h3>
+              <p>Visual comparisons for the summary and symbol screens are stored per run — ten before/after pairs on the defects that were raised from this work. A bug report that carries its own proof gets fixed instead of debated.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">05</span>
+            <div>
+              <h3>One static cache for the slow part</h3>
+              <p>Session and reference data are cached between specs, so the suite spends its time on the screens under test rather than logging in a hundred times.</p>
+            </div>
+          </div>
+        </div>
+
+        <h2>Evidence</h2>
+        <p>
+          I originally reported this suite as <strong>89 tests across 8 modules</strong>. Recounted file
+          by file it is <strong>102 test blocks across 11 spec files</strong>, of which
+          <strong>100 carry a unique TCMS case ID</strong> — the three login tests carry none. I had
+          counted modules from memory. The correction stands on this page rather than being quietly
+          overwritten.
+        </p>
+        <table class="ledger">
+          <caption>Spec files and test blocks — counted 12 Nov 2026</caption>
+          <thead>
+            <tr><th scope="col">Spec file</th><th scope="col" class="src">Area</th><th scope="col">Tests</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="claim">user.spec.js</td><td class="src">admin</td><td class="val">21</td></tr>
+            <tr><td class="claim">role.spec.js</td><td class="src">admin</td><td class="val">18</td></tr>
+            <tr><td class="claim">symbol.spec.js</td><td class="src">configuration</td><td class="val">14</td></tr>
+            <tr><td class="claim">tradePriority.spec.js</td><td class="src">configuration</td><td class="val">11</td></tr>
+            <tr><td class="claim">highestLatest.spec.js</td><td class="src">configuration</td><td class="val">8</td></tr>
+            <tr><td class="claim">company.spec.js</td><td class="src">system</td><td class="val">8</td></tr>
+            <tr><td class="claim">summary.spec.js</td><td class="src">dashboard</td><td class="val">7</td></tr>
+            <tr><td class="claim">overview.spec.js</td><td class="src">configuration</td><td class="val">5</td></tr>
+            <tr><td class="claim">ozPosition.spec.js</td><td class="src">dashboard</td><td class="val">5</td></tr>
+            <tr><td class="claim">login.spec.js</td><td class="src">auth</td><td class="val">3</td></tr>
+            <tr><td class="claim">globalConfig.spec.js</td><td class="src">configuration</td><td class="val">2</td></tr>
+            <tr><td class="claim"><strong>Total</strong></td><td class="src">11 files · 5 areas</td><td class="val">102</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Result</h2>
+        <p>
+          The revamp modules have a regression net that runs on every push, and failures point at a
+          screen instead of a stack trace. Five defects in the summary screen and five in the symbol
+          screen were raised from this work with before/after screenshots attached.
+        </p>
+
+        <h2>What I would do differently</h2>
+        <ul>
+          <li><strong>Shard the suite in CI.</strong> It grows linearly with the revamp; one job will
+            not stay acceptable.</li>
+          <li><strong>Seed through the API, not the UI.</strong> Login as a fixture is already cached,
+            but creating users and roles through the interface is setup pretending to be a test.</li>
+          <li><strong>A tagged smoke subset</strong>, so a release check is six minutes and not the
+            whole suite.</li>
+        </ul>
+      </div>
+
+      <nav class="case-nav" aria-label="Case files">
+        <a class="btn btn--quiet" href="qa-dashboard.html"><span aria-hidden="true">←</span> CF-02 QA Dashboard</a>
+        <a class="btn" href="index.html#work">All work <span class="arrow" aria-hidden="true">→</span></a>
+      </nav>
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap foot-inner">
+    <span>© <span data-year>2026</span> Aditya Rahman Al-Faridzi</span>
+    <span>No secrets, no internal documents, no company data on this page.</span>
+    <a href="index.html">Index</a>
+  </div>
+</footer>
+
+<script src="assets/main.js" defer></script>
+</body>
+</html>

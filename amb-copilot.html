@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CF-01 · AMB Copilot — Aditya Rahman Al-Faridzi</title>
+<meta name="description" content="Case file: a Lark bot that files Jira tickets and answers product questions from internal PRDs. 211 commits, 22 edge functions, 190+ tickets.">
+<meta name="theme-color" content="#f2f0e9">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2314140f'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='13' fill='%23f2f0e9' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preload" href="assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/style.css">
+<script>(function(){var r=document.documentElement,s=null,t=null;try{s=localStorage.getItem('af-motion');t=localStorage.getItem('af-theme')}catch(e){}var on=s?s==='on':!matchMedia('(prefers-reduced-motion: reduce)').matches;r.dataset.motion=on?'on':'off';if(on)r.classList.add('motion');if(t)r.dataset.theme=t})()</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a class="brand" href="index.html"><span class="monogram" aria-hidden="true">AF</span>
+        <span class="brand-name">Aditya R. Al-Faridzi</span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html#work" aria-current="page">Work</a>
+      <a href="index.html#numbers">Numbers</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#contact">Contact</a>
+      <a class="nav-keep" href="cv.html">CV</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <article>
+    <div class="wrap">
+      <div class="case-head">
+        <div class="crumbs">
+          <a href="index.html">Index</a><span aria-hidden="true">/</span>
+          <a href="index.html#work">Work</a><span aria-hidden="true">/</span>
+          <span>CF-01</span>
+        </div>
+        <h1>AMB Copilot: a bot that files the ticket, not just the complaint.</h1>
+        <p class="summary">
+          Bug reports arrived in chat as free-form notes and left as Jira tickets that a human had
+          retyped. Epics were matched by hand, duplicates slipped through, and the answer to "how does
+          this actually behave?" lived in 217 documents nobody could search. This is the system that
+          took over all three — and the review rules that stopped it from guessing.
+        </p>
+
+        <dl class="meta-grid">
+          <div class="meta-cell"><dt>Role</dt><dd>Design, build, test, operate</dd></div>
+          <div class="meta-cell"><dt>Period</dt><dd>Aug 2026 — now</dd></div>
+          <div class="meta-cell"><dt>Surface</dt><dd>Lark bot · MCP server</dd></div>
+          <div class="meta-cell"><dt>Status</dt><dd><span class="badge badge--ok">Running</span></dd></div>
+        </dl>
+      </div>
+
+      <div class="prose">
+        <h2>Problem</h2>
+        <p>
+          The team worked in Lark. Bug reports were written there, by hand, in whatever shape the
+          moment allowed — a screenshot and a sentence. Turning that into a usable Jira ticket took a
+          QA engineer ten minutes: retype the steps, work out the environment, find the epic, check
+          whether this was the fourth report of the same thing this week.
+        </p>
+        <p>
+          The cost was not the ten minutes. The cost was that <strong>the quality of the ticket
+          depended on who was free</strong>. A bad ticket becomes a bad fix, and a duplicate ticket
+          becomes two teams fixing the same defect twice.
+        </p>
+
+        <h2>Constraints</h2>
+        <ul>
+          <li><strong>No new surface for people to learn.</strong> A dashboard nobody opens is a failed
+            product; the work had to happen inside the chat window the team already had.</li>
+          <li><strong>Company data cannot leave approved services.</strong> Documents stay in the
+            company's own database; the model sees retrieved context, not the corpus.</li>
+          <li><strong>Edge Functions only.</strong> No long-running server to babysit — 22 separate
+            functions, each with one job.</li>
+          <li><strong>The model is not deterministic.</strong> Which means every model output needs a
+            rule around it, not a hope.</li>
+        </ul>
+
+        <h2>What I built</h2>
+        <p>
+          One bot at the front, a set of single-purpose functions behind it, and a knowledge layer
+          underneath that both the bot and the developer tools call into.
+        </p>
+
+        <figure>
+          <img src="assets/img/lark-intake.webp" width="760" height="549" loading="lazy"
+               alt="Lark chat showing AMB Copilot returning a structured bug ticket preview: title, story points, due date, repetition check, epic, precondition and four reproduction steps.">
+          <figcaption>
+            FIG. 02 — the preview the bot returns in Lark: title, story points, due date, repetition
+            check, epic, precondition and numbered steps, all generated from one free-text message.
+            The crop stops above the actual/expected sections, which contained company volume
+            figures.
+          </figcaption>
+        </figure>
+
+        <div class="decisions">
+          <div class="decision">
+            <span class="n">01</span>
+            <div>
+              <h3>Ship it where the team already works</h3>
+              <p><code>/bug</code> and <code>/tanya</code> are slash commands in Lark. No install, no login page, no adoption plan — the tool arrives in the conversation where the bug was reported.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">02</span>
+            <div>
+              <h3>Draft first, file on approval</h3>
+              <p>The bot renders the finished ticket back to the reporter — steps, environment, epic, duplicate candidates — and waits. Nothing reaches Jira until a human confirms it. The bottleneck is a feature: it is the cheapest review step in the whole pipeline.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">03</span>
+            <div>
+              <h3>Rules where rules work, the model where it helps</h3>
+              <p>Epic matching runs through an explicit matching pass with its own fixtures (<code>epic_matching_test.ts</code>) rather than being left to the model's taste. That is the direct cause of the fix shipped this week: <em>"Pilih epic"</em> now resolves to the right epic on the first try, because the match is a covered case and not a lucky completion.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">04</span>
+            <div>
+              <h3>Retrieval that is allowed to say "not found"</h3>
+              <p>Hybrid search over the PRDs — Gemini embeddings for recall, DeepSeek reranking for order — then an answer constrained to the retrieved context, with the source attached. When the documents do not answer the question, the honest output is <strong>"not found"</strong>, and that is the correct answer, not a failure. A confidently invented answer is the defect this system exists to avoid.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">05</span>
+            <div>
+              <h3>Duplicate detection before creation, not after</h3>
+              <p>Recurrence detection runs before the ticket is filed, comparing against bug history and linking repeats back to the original. A duplicate caught here costs one message; caught later it costs a fortnight of two teams on one root cause.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">06</span>
+            <div>
+              <h3>The knowledge base is an API, not a chatbot feature</h3>
+              <p>The same retrieval is exposed as an MCP server, so Claude Code, Kiro and Cursor read the company documents from inside the editor — used by a <strong>25-person team</strong> across QA, engineering, product and business development. Per-role tool sets, token verification, and row-level security on every table. Access is auditable, revocable and attributed.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">07</span>
+            <div>
+              <h3>The system also watches itself</h3>
+              <p>An LLM judge scores incoming bug reports for quality, classifies root cause, and rolls a weekly digest. A due-date reminder at 19:00 carries a one-click <em>Ready to UAT</em> status update, so the ticket stays true without anyone opening Jira.</p>
+            </div>
+          </div>
+        </div>
+
+        <blockquote class="pull">
+          If the tool cannot find the answer, "not found" is the correct answer.
+          That sentence is the whole design.
+          <cite>— comment in the answer prompt, which is now the rule for every model decision here</cite>
+        </blockquote>
+
+        <h2>Evidence</h2>
+        <p>
+          Nothing below is an estimate. Every figure was re-derived from the repository on
+          12 November 2026; the method is in the last column.
+        </p>
+        <table class="ledger">
+          <caption>AMB Copilot — audit of 12 Nov 2026</caption>
+          <thead>
+            <tr><th scope="col">Measure</th><th scope="col">Value</th><th scope="col" class="src">Method</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="claim">Commits</td><td class="val">211</td><td class="src">git rev-list --count HEAD</td></tr>
+            <tr><td class="claim">Edge functions</td><td class="val">22</td><td class="src">24 dirs minus _shared, _tests</td></tr>
+            <tr><td class="claim">Unit tests / files</td><td class="val">823 / 30</td><td class="src">Deno.test blocks in supabase/functions/_tests</td></tr>
+            <tr><td class="claim">Tickets opened via the bot</td><td class="val">190+</td><td class="src">Jira filter, bot author (reported)</td></tr>
+            <tr><td class="claim">Documents indexed</td><td class="val">217</td><td class="src">document table (reported)</td></tr>
+            <tr><td class="claim">People with knowledge-base access</td><td class="val">25</td><td class="src">MCP users, recorded (reported)</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Result</h2>
+        <p>
+          The bot is the default way bugs enter Jira on this team: <strong>190+ tickets</strong> created
+          through it. The same infrastructure now also drafts test cases to the team's own title
+          standard, converts SA tickets into Jira stories on a daily 08:30 sync, reviews QA knowledge
+          notes through an approval flow, and answers product questions with a citation or an honest
+          refusal.
+        </p>
+
+        <h2>What I would do differently</h2>
+        <ul>
+          <li><strong>Build the retrieval evaluation set first.</strong> Reranker quality is currently
+            argued from examples. A frozen set of question/answer pairs with hit-rate and MRR would
+            turn "it feels better" into a number I can defend in a review.</li>
+          <li><strong>Track cost per answer from day one.</strong> Embeddings plus rerank plus a
+            completion has a price per query, and I cannot quote it today.</li>
+          <li><strong>Test the epic matcher with the messy cases, not the tidy ones.</strong> The bug
+            this week lived in an alias nobody thought to write a fixture for. The next fixture set
+            starts from the corrections users actually made.</li>
+        </ul>
+      </div>
+
+      <nav class="case-nav" aria-label="Case files">
+        <a class="btn btn--quiet" href="index.html#work"><span aria-hidden="true">←</span> All work</a>
+        <a class="btn" href="qa-dashboard.html">Next: CF-02 QA Dashboard <span class="arrow" aria-hidden="true">→</span></a>
+      </nav>
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap foot-inner">
+    <span>© <span data-year>2026</span> Aditya Rahman Al-Faridzi</span>
+    <span>No secrets, no internal documents, no company data on this page.</span>
+    <a href="index.html">Index</a>
+  </div>
+</footer>
+
+<script src="assets/main.js" defer></script>
+</body>
+</html>

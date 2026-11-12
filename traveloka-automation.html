@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TF-01 · Cross-squad automation at Traveloka — Aditya Rahman Al-Faridzi</title>
+<meta name="description" content="Case file: cross-squad automation across four Platform domains at Traveloka — coverage, pass rates, and the regression work that stopped costing story points.">
+<meta name="theme-color" content="#f2f0e9">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2314140f'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='13' fill='%23f2f0e9' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preload" href="assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/style.css">
+<script>(function(){var r=document.documentElement,s=null,t=null;try{s=localStorage.getItem('af-motion');t=localStorage.getItem('af-theme')}catch(e){}var on=s?s==='on':!matchMedia('(prefers-reduced-motion: reduce)').matches;r.dataset.motion=on?'on':'off';if(on)r.classList.add('motion');if(t)r.dataset.theme=t})()</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a class="brand" href="index.html" aria-label="Aditya Rahman Al-Faridzi, home">
+      <span class="monogram" aria-hidden="true">AF</span>
+        <span class="brand-name">Aditya R. Al-Faridzi</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html#work" aria-current="page">Work</a>
+      <a href="index.html#numbers">Numbers</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#contact">Contact</a>
+      <a class="nav-keep" href="cv.html">CV</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <article>
+    <div class="wrap">
+      <div class="case-head">
+        <div class="crumbs">
+          <a href="index.html">Index</a><span aria-hidden="true">/</span>
+          <a href="index.html#work">Work</a><span aria-hidden="true">/</span>
+          <span>TF-01</span>
+        </div>
+        <h1>Four domains, one net, and regression that stopped costing story points.</h1>
+        <p class="summary">
+          At Traveloka, Platform had four domains running at once — Homepage, Merchandising and
+          Promotions, User Identity and Security, Messaging — each shipping into three surfaces:
+          web, mWeb, and native. Regression was manual, and manual regression is paid for in story
+          points every single release. This is the net that replaced it.
+        </p>
+
+        <dl class="meta-grid">
+          <div class="meta-cell"><dt>Role</dt><dd>QA Engineer, Platform</dd></div>
+          <div class="meta-cell"><dt>Period</dt><dd>Feb 2024 — May 2026</dd></div>
+          <div class="meta-cell"><dt>Surface</dt><dd>Web · mWeb · iOS · Android · API</dd></div>
+          <div class="meta-cell"><dt>Status</dt><dd><span class="badge badge--ok">Handed over</span></dd></div>
+        </dl>
+      </div>
+
+      <div class="prose">
+        <h2>Problem</h2>
+        <p>
+          Four domains is not four products — it is four sets of dependencies sharing one login, one
+          homepage slot, one promo engine. A change in Promotions can break a Homepage module; a
+          change in Identity can break everything. So every release needed the same manual pass over
+          and over, and that pass was written into the sprint as story points.
+        </p>
+        <p>
+          The cost was not the testing. The cost was that <strong>regression competed with new
+          testing</strong>, and when a release ran short, the thing that got cut was the thing that
+          protects the release.
+        </p>
+
+        <h2>What I built</h2>
+        <div class="figure-pair">
+          <figure>
+            <img src="assets/img/traveloka-web.webp" width="1240" height="471" loading="lazy"
+                 alt="The Traveloka homepage on desktop: navigation, search module for hotels, flights and trains, and a row of new-user coupons.">
+            <figcaption>
+              FIG. 02 — the Homepage on desktop. One of the four Platform domains I owned as QA;
+              regression here was automated to 100% coverage on Web and mWeb, so the platform stopped
+              consuming regression story points each release.
+            </figcaption>
+          </figure>
+          <figure>
+            <img src="assets/img/traveloka-app.webp" width="420" height="915" loading="lazy"
+                 alt="The Traveloka app home screen: product shortcuts, deals and the travel planner entry point. The points balance is redacted.">
+            <figcaption>
+              FIG. 03 — the same surface in the app, where mobile E2E coverage reached 86.07% at a
+              91.78% pass rate. Points balance redacted.
+            </figcaption>
+          </figure>
+        </div>
+        <div class="decisions">
+          <div class="decision">
+            <span class="n">01</span>
+            <div>
+              <h3>One net across four domains, not four separate suites</h3>
+              <p>I owned QA for all four domains at once, so the automation was shaped by the dependency between them rather than by team boundaries. A failure in one domain could be traced to a change in another, because they lived in the same run.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">02</span>
+            <div>
+              <h3>Automate the regression so it stops costing story points</h3>
+              <p>Merchandising and Homepage regression became fully automated. Those platforms stopped consuming regression story points per release — the capacity went back into new coverage instead of re-proving what already worked.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">03</span>
+            <div>
+              <h3>One tool per surface, chosen for the surface</h3>
+              <p>Playwright for web, Maestro and Appium for Android and iOS, Karate for API, all running in the SDET team's GitHub Actions pipelines. The tool followed the surface; the pipeline stayed one place.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">04</span>
+            <div>
+              <h3>Risk-based test plans, written before the build</h3>
+              <p>Plans went into TestRail during kick-off, with PMs and developers in the room. E2E scenarios were reused as the base for shift-left automation, so the same scenario that proved a feature also guarded it later.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">05</span>
+            <div>
+              <h3>Keep the suites you did not write alive</h3>
+              <p>I fixed and maintained test cases outside my own domains — Points, User, Cobrand — because a pass rate is a property of the whole pipeline, not of the folder you happen to own.</p>
+            </div>
+          </div>
+        </div>
+
+        <h2>Evidence</h2>
+        <p>Figures from the run reports of those cycles. Business-impact numbers are deliberately withheld; these are the QA measures.</p>
+        <table class="ledger">
+          <caption>Coverage and pass rates, Feb 2024 — May 2026</caption>
+          <thead>
+            <tr><th scope="col">Measure</th><th scope="col">Result</th><th scope="col">Against</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="claim">Mobile E2E coverage</td><td class="val">86.07%</td><td class="src">target 85%</td></tr>
+            <tr><td class="claim">Mobile E2E pass rate</td><td class="val">91.78%</td><td class="src">target 80%</td></tr>
+            <tr><td class="claim">Web pass rate</td><td class="val">91.55%</td><td class="src">—</td></tr>
+            <tr><td class="claim">mWeb pass rate</td><td class="val">94.14%</td><td class="src">—</td></tr>
+            <tr><td class="claim">Merchandising coverage, mobile</td><td class="val">90.87%</td><td class="src">fully automated</td></tr>
+            <tr><td class="claim">Merchandising coverage, Web and mWeb</td><td class="val">100%</td><td class="src">fully automated</td></tr>
+            <tr><td class="claim">Product features tested in 2025</td><td class="val">85</td><td class="src">across the four domains</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Result</h2>
+        <p>
+          Two of the four domains stopped consuming regression story points entirely. The suite ran in
+          the pipelines the SDET team maintained, and it found crash-level defects during automation
+          runs — <strong>before staging and before production</strong>, which is the only place a
+          crash is cheap.
+        </p>
+
+        <h2>What I would do differently</h2>
+        <ul>
+          <li><strong>Shard by domain from day one.</strong> One long pipeline is fine at first and a
+            bottleneck by month six.</li>
+          <li><strong>Publish the pass rate, not just the coverage.</strong> Coverage without pass rate
+            is a number that rewards writing tests that never run.</li>
+          <li><strong>Track flake as a first-class defect.</strong> We treated a flaky test as noise to
+            retry. It is a defect in the suite, and it launders real failures.</li>
+        </ul>
+      </div>
+
+      <nav class="case-nav" aria-label="Case files">
+        <a class="btn btn--quiet" href="index.html#work"><span aria-hidden="true">←</span> All work</a>
+        <a class="btn" href="traveloka-identity.html">Next: TF-02 Identity &amp; Security <span class="arrow" aria-hidden="true">→</span></a>
+      </nav>
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap foot-inner">
+    <span>© <span data-year>2026</span> Aditya Rahman Al-Faridzi</span>
+    <span>No secrets, no internal documents, no company data on this page.</span>
+    <a href="index.html">Index</a>
+  </div>
+</footer>
+
+<script src="assets/main.js" defer></script>
+</body>
+</html>

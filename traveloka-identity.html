@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TF-02 · Identity &amp; Security at Traveloka — Aditya Rahman Al-Faridzi</title>
+<meta name="description" content="Case file: QA for the SSO and email sign-in revamp, social login for Japan and Korea, and account deletion moving from the support queue to self-service.">
+<meta name="theme-color" content="#f2f0e9">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2314140f'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='13' fill='%23f2f0e9' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preload" href="assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/style.css">
+<script>(function(){var r=document.documentElement,s=null,t=null;try{s=localStorage.getItem('af-motion');t=localStorage.getItem('af-theme')}catch(e){}var on=s?s==='on':!matchMedia('(prefers-reduced-motion: reduce)').matches;r.dataset.motion=on?'on':'off';if(on)r.classList.add('motion');if(t)r.dataset.theme=t})()</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a class="brand" href="index.html" aria-label="Aditya Rahman Al-Faridzi, home">
+      <span class="monogram" aria-hidden="true">AF</span>
+        <span class="brand-name">Aditya R. Al-Faridzi</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html#work" aria-current="page">Work</a>
+      <a href="index.html#numbers">Numbers</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#contact">Contact</a>
+      <a class="nav-keep" href="cv.html">CV</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <article>
+    <div class="wrap">
+      <div class="case-head">
+        <div class="crumbs">
+          <a href="index.html">Index</a><span aria-hidden="true">/</span>
+          <a href="index.html#work">Work</a><span aria-hidden="true">/</span>
+          <span>TF-02</span>
+        </div>
+        <h1>Testing the door: SSO, social login, and the account you can now delete yourself.</h1>
+        <p class="summary">
+          Every product decision at Traveloka passed through one door: how a user signs in. In two
+          years that door was rebuilt — login and register moved to SSO and email, social login was
+          added for a Japan and Korea expansion, and account deletion came off the support queue and
+          became something a user could do alone.
+        </p>
+
+        <dl class="meta-grid">
+          <div class="meta-cell"><dt>Role</dt><dd>QA Engineer, Platform</dd></div>
+          <div class="meta-cell"><dt>Period</dt><dd>Feb 2024 — May 2026</dd></div>
+          <div class="meta-cell"><dt>Surface</dt><dd>iOS · Android · mWeb · API</dd></div>
+          <div class="meta-cell"><dt>Status</dt><dd><span class="badge badge--ok">Shipped</span></dd></div>
+        </dl>
+      </div>
+
+      <div class="prose">
+        <h2>Problem</h2>
+        <p>
+          Identity is the one domain where "it works" is never the question. The questions are: does it
+          work for the account that already exists, on the device that is two versions behind, with the
+          provider that returns a different payload? A sign-in screen is a small thing with a very large
+          matrix behind it.
+        </p>
+
+        <h2>What I tested</h2>
+        <div class="decisions">
+          <div class="decision">
+            <span class="n">01</span>
+            <div>
+              <h3>The Login / Register V3 move to SSO and email</h3>
+              <p>A revamp that changed the primary path for every existing user. The work was less "test the new screen" and more "prove the old user still gets in" — existing accounts, fallbacks, and the phone-number path that was being de-emphasised.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">02</span>
+            <div>
+              <h3>Social login for the Japan and Korea expansion</h3>
+              <p>LINE, NAVER and TikTok, each with its own consent screen and failure behaviour. Every provider got the same matrix: success, failure, cancel, and linking to an account that already exists.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">03</span>
+            <div>
+              <h3>Account deletion, from support queue to self-service</h3>
+              <p>The flow moved off native screens into a Web Container that reuses the MWeb version. The test of that revamp was parity: the container had to behave exactly like the flow it replaced, on a screen where being wrong means an account that cannot be recovered.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <span class="n">04</span>
+            <div>
+              <h3>The onboarding slides experiment</h3>
+              <p>An experiment in User Identity that had to be measured, not just shipped. Testing an experiment means testing the instrumentation: if the event does not fire, the experiment reports a winner that does not exist.</p>
+            </div>
+          </div>
+        </div>
+
+        <h2>Evidence</h2>
+        <p>
+          Business-impact figures are withheld by choice. What can be stated is what was tested and
+          what moved:
+        </p>
+        <table class="ledger">
+          <caption>Identity &amp; Security, Feb 2024 — May 2026</caption>
+          <thead>
+            <tr><th scope="col">Area</th><th scope="col">What was verified</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="claim">Login / Register V3</td><td class="src">SSO and email path, existing accounts, fallbacks</td></tr>
+            <tr><td class="claim">Social login</td><td class="src">LINE · NAVER · TikTok — success, failure, cancel, linking</td></tr>
+            <tr><td class="claim">Account deletion</td><td class="src">parity between Web Container and the MWeb flow it reuses</td></tr>
+            <tr><td class="claim">Onboarding experiment</td><td class="src">event instrumentation before the result was read</td></tr>
+            <tr><td class="claim">Outcome</td><td class="src">deletion moved from support-handled to self-service; the onboarding experiment produced the highest login success recorded since 2024</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Result</h2>
+        <p>
+          The V3 revamp and the social providers shipped, and the identity domain closed a release
+          cycle without an authentication regression reaching production. Account deletion stopped
+          being a support queue and became a screen a user could finish alone — which is both a QA
+          outcome and a privacy one.
+        </p>
+
+        <h2>What I would do differently</h2>
+        <ul>
+          <li><strong>Write the identity matrix down as a document, not a checklist.</strong> Method ×
+            platform × account state is the real test plan; a list of screens is only its shadow.</li>
+          <li><strong>Test the analytics as hard as the button.</strong> An experiment with a broken
+            event is worse than no experiment, because it produces a confident wrong answer.</li>
+          <li><strong>Have the deletion parity test automated.</strong> It is a perfect fit for a
+            visual-diff run against two implementations of the same flow.</li>
+        </ul>
+      </div>
+
+      <nav class="case-nav" aria-label="Case files">
+        <a class="btn btn--quiet" href="traveloka-automation.html"><span aria-hidden="true">←</span> TF-01 Cross-squad automation</a>
+        <a class="btn" href="index.html#work">All work <span class="arrow" aria-hidden="true">→</span></a>
+      </nav>
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap foot-inner">
+    <span>© <span data-year>2026</span> Aditya Rahman Al-Faridzi</span>
+    <span>No secrets, no internal documents, no company data on this page.</span>
+    <a href="index.html">Index</a>
+  </div>
+</footer>
+
+<script src="assets/main.js" defer></script>
+</body>
+</html>

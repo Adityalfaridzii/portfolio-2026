@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV — Aditya Rahman Al-Faridzi, Senior QA Engineer</title>
+<meta name="description" content="Print-ready CV: senior QA engineer, four years across fintech, e-commerce and travel; test automation and AI tooling.">
+<meta name="theme-color" content="#f2f0e9">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2314140f'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='13' fill='%23f2f0e9' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preload" href="assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/style.css">
+<script>(function(){var r=document.documentElement,s=null,t=null;try{s=localStorage.getItem('af-motion');t=localStorage.getItem('af-theme')}catch(e){}var on=s?s==='on':!matchMedia('(prefers-reduced-motion: reduce)').matches;r.dataset.motion=on?'on':'off';if(on)r.classList.add('motion');if(t)r.dataset.theme=t})()</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a class="brand" href="index.html"><span class="monogram" aria-hidden="true">AF</span>
+        <span class="brand-name">Aditya R. Al-Faridzi</span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html#work">Work</a>
+      <a href="index.html#numbers">Numbers</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#contact">Contact</a>
+      <a class="nav-keep" href="cv.html" aria-current="page">CV</a>
+    </nav>
+    <div class="head-cta">
+      <button class="btn btn--quiet" type="button" data-print>Print / PDF</button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <div class="cv">
+    <div class="cv-head">
+      <h1>Aditya Rahman Al-Faridzi</h1>
+      <p class="role">Senior QA Engineer — Test Automation &amp; AI Tooling</p>
+      <div class="cv-contact">
+        <span>Jakarta, Indonesia · GMT+7</span>
+        <span>adityalfaridzi@gmail.com</span>
+        <span>linkedin.com/in/adityalfaridzi</span>
+        <span>github.com/Adityalfaridzii</span>
+      </div>
+    </div>
+
+    <section>
+      <h2>Profile</h2>
+      <p style="font-size:0.875rem;color:var(--muted);line-height:1.55">
+        Senior QA engineer with 4+ years across fintech, e-commerce and travel, doing both manual and
+        automated testing. I write UI automation in Playwright and Maestro, API automation in Karate and
+        TypeScript, and run the suites in GitHub Actions and GitLab CI/CD pipelines. I own test strategy
+        and shift-left practice from the PRD onward, and I build the AI tooling that QA and dev teams run
+        on — then test it like any other product, unit tests first. At Traveloka I led cross-squad
+        automation and owned four Platform domains; today I automate trade execution and position checks
+        on a fintech trading platform and own the bot the team files its bugs through.
+      </p>
+    </section>
+
+    <section>
+      <h2>Experience</h2>
+
+      <div class="cv-entry">
+        <div class="when">Jun 2026 — now</div>
+        <div>
+          <h3>QA Engineer, AI &amp; Automation</h3>
+          <p class="org">PT Surya Anugrah Mulya · fintech trading platform · Jakarta</p>
+          <ul>
+            <li><strong>Test automation:</strong> wrote 102 Playwright UI tests across 11 spec files — 100 of them mapped to a TCMS case ID — covering role, user, company, five configuration screens and dashboard, on page objects with shared fixtures.</li>
+            <li><strong>QA dashboard</strong> (TypeScript, Fastify, React, Vitest): replaces the spreadsheet used to verify trade calculations. Computes expected positions for four trade methods, sends test trades through the API, reads the results back, and flags orders rejected by the order-routing system with a proposed fix. 180 unit tests.</li>
+            <li><strong>Trade smoke test:</strong> covers happy flow, rejection and cancellation, sets each scenario up through the configuration API, and always restores the original settings afterwards.</li>
+            <li><strong>Bug-intake bot in Lark:</strong> turns an informal bug note into a structured Jira ticket — steps, environment, story points, epic link, duplicate check. 190+ tickets filed since August 2026 across 22 edge functions, with 823 unit tests run before every deploy.</li>
+            <li><strong>RAG knowledge base</strong> over 217 PRDs and technical documents: hybrid vector and keyword search with reranking, answers cite their source. Exposed through an MCP server used by a 25-person team across QA, engineering, product and business development.</li>
+            <li><strong>Defect analytics:</strong> an LLM judge that flags repeats against 930+ reviewed bug pairs, root-cause categories and a defect dashboard; AI test-case generation from PRDs; SA-to-Jira story creation (22 stories so far).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="when">Feb 2024 — May 2026</div>
+        <div>
+          <h3>QA Engineer</h3>
+          <p class="org">Traveloka · Platform team · Tangerang</p>
+          <ul>
+            <li>Owned QA for four Platform domains at once — Homepage, Merchandising &amp; Promotions, User Identity &amp; Security, Messaging — and tested 85 product features in 2025.</li>
+            <li>QA for the Login/Register V3 revamp that moved users to SSO and email sign-in, reducing reliance on SMS OTP and the cost that came with it.</li>
+            <li>QA for the Account Deletion revamp, which took account deletion off the support queue and made it self-service by reusing the MWeb flow in a Web Container.</li>
+            <li>Tested social login integrations with LINE, NAVER and TikTok for expansion into Japan and Korea — success and failure paths, account linking, and regression on existing methods.</li>
+            <li>Fully automated regression for Merchandising and Homepage, so those platforms stopped consuming regression story points each release; Merchandising coverage 90.87% mobile and 100% on Web and MWeb.</li>
+            <li>Led cross-squad automation: mobile E2E coverage 86.07% (target 85%) at a 91.78% pass rate (target 80%); Web and MWeb pass rates 91.55% and 94.14%.</li>
+            <li>Wrote Maestro, Appium and Karate tests across Android, iOS, web and API, ran them in the SDET team's GitHub Actions pipelines, and found crash-level bugs before staging or production.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="when">Feb 2022 — Feb 2024</div>
+        <div>
+          <h3>QA Engineer</h3>
+          <p class="org">Gokomodo · Jakarta</p>
+          <ul>
+            <li>Tested web and mobile applications with E2E, regression and sanity runs across the commerce stack.</li>
+            <li>API testing with Postman; test plans and cases in TestRail.</li>
+            <li>Reviewed requirements and technical designs, and tracked bugs through to release with PMs and developers.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="when">2017 — 2022</div>
+        <div>
+          <h3>Before QA</h3>
+          <p class="org">Charoen Pokphand Indonesia · Indonesia Power · Telkom Indonesia</p>
+          <ul>
+            <li>Purchasing Staff, Charoen Pokphand Indonesia (2021–2022).</li>
+            <li>Internships at Indonesia Power and Telkom Indonesia (2017–2018), during my degree.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Skills</h2>
+      <dl>
+        <div class="cv-skill"><dt>UI &amp; mobile</dt><dd>Playwright (POM, fixtures), playwright-bdd, Maestro, Appium, Katalon</dd></div>
+        <div class="cv-skill"><dt>API &amp; backend</dt><dd>Karate (BDD/Gherkin), Postman, REST validation, SQL checks, JMeter</dd></div>
+        <div class="cv-skill"><dt>Languages</dt><dd>JavaScript, TypeScript, Node.js, Deno, Vitest, Supabase (Edge Functions, RLS, pgvector), PostgreSQL, Git, GitHub Actions, GitLab CI</dd></div>
+        <div class="cv-skill"><dt>AI tooling</dt><dd>LLM applications (Claude, DeepSeek, Gemini), RAG and hybrid search, MCP servers, prompt design</dd></div>
+        <div class="cv-skill"><dt>Testing practice</dt><dd>Test planning, E2E, regression, sanity, requirement review, shift-left testing, bug triage</dd></div>
+      </dl>
+    </section>
+
+    <section>
+      <h2>Education &amp; certifications</h2>
+      <dl>
+        <div class="cv-skill"><dt>Education</dt><dd>B.Eng, Electrical Engineering — Telkom University, 2015–2020</dd></div>
+        <div class="cv-skill"><dt>Certifications</dt><dd>JMeter: Performance and Load Testing · API Testing and Validation · Software Testing Foundations: Test Techniques · Tech Career Skills: Effective Technical Communication · Introduction to Claude Cowork</dd></div>
+      </dl>
+    </section>
+
+    <section class="cv-note">
+      <h2>Note on numbers</h2>
+      <p style="font-size:0.75rem;color:var(--muted);line-height:1.55">
+        Commit, edge-function, unit-test and Playwright figures were re-derived from the repositories on
+        12 November 2026 and can be reproduced. Coverage, ticket, document and user figures come from the
+        systems that hold them. The Playwright suite was previously reported as 89 tests over 8 modules;
+        recounted, it is 102 test blocks over 11 spec files, 100 of them carrying a TCMS case ID.
+      </p>
+    </section>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap foot-inner">
+    <span>© <span data-year>2026</span> Aditya Rahman Al-Faridzi</span>
+    <span>Public version: no phone number, no company figures.</span>
+    <a href="index.html">Index</a>
+  </div>
+</footer>
+
+<script src="assets/main.js" defer></script>
+</body>
+</html>

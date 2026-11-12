@@ -1,0 +1,10 @@
+﻿# working files, not the site
+_shots/
+_lab/
+node_modules/
+.env
+.DS_Store
+
+# scratch
+_*.py
+_preview.mjs
