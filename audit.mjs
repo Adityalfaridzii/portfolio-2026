@@ -255,11 +255,12 @@ for (const href of links) {
   if (r.status() !== 200) failures.push({ page: "links", issues: ["404: " + href] });
 }
 
-/* the social card must actually exist on the server */
+/* the social card must actually exist; og:image may be relative or absolute */
 for (const og of ogImages) {
   if (!og) continue;
-  const r = await request.get(base + og);
-  if (r.status() !== 200) failures.push({ page: "og:image", issues: [og + " → HTTP " + r.status()] });
+  const target = /^https?:/i.test(og) ? og : base + og;
+  const r = await request.get(target);
+  if (r.status() !== 200) failures.push({ page: "og:image", issues: [target + " → HTTP " + r.status()] });
 }
 await request.dispose();
 
