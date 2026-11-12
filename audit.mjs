@@ -41,7 +41,10 @@ async function loadChromium() {
       const require = createRequire(join(base, "noop.js"));
       const entry = require.resolve("playwright");
       const mod = await import(pathToFileURL(entry).href);
-      if (mod.chromium) return mod.chromium;
+      /* playwright is CommonJS: the named export may not be detected, so the
+         real object can sit on .default */
+      const chromium = mod.chromium || (mod.default && mod.default.chromium);
+      if (chromium) return chromium;
     } catch {
       /* try the next one */
     }
@@ -124,18 +127,6 @@ function contrastAudit() {
   return fails;
 }
 
-function divBalance() {
-  const body = document.body;
-  let depth = 0, worst = 0;
-  for (const el of body.querySelectorAll("*")) {
-    const tag = el.tagName.toLowerCase();
-    if (tag === "div") depth++;
-  }
-  const open = document.documentElement.outerHTML.match(/<div\b/g)?.length || 0;
-  const close = document.documentElement.outerHTML.match(/<\/div>/g)?.length || 0;
-  return { open, close, balanced: open === close };
-}
-
 async function scrollThrough(page) {
   await page.evaluate(async () => {
     document.documentElement.style.scrollBehavior = "auto";
@@ -162,6 +153,7 @@ const base = "http://127.0.0.1:" + PORT + "/";
 const browser = await chromium.launch();
 const failures = [];
 const rows = [];
+const ogImages = new Set();
 
 for (const [name, path] of PAGES) {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
@@ -182,10 +174,17 @@ for (const [name, path] of PAGES) {
       h1: document.querySelectorAll("h1").length,
       overflow: document.documentElement.scrollWidth > window.innerWidth + 1,
       nestedCards: document.querySelectorAll(".prose .decision .decision").length,
-      divs: divBalance(),
+      divs: (() => {
+        const html = document.documentElement.outerHTML;
+        const open = (html.match(/<div\b/g) || []).length;
+        const close = (html.match(/<\/div>/g) || []).length;
+        return { open, close, balanced: open === close };
+      })(),
       anchorsResolve: [...document.querySelectorAll('.toc-bar a')].every((a) => !!document.getElementById(a.getAttribute("href").slice(1))),
       railLinks: document.querySelectorAll(".toc-bar a").length,
       railActiveAtTop: !!document.querySelector('.toc-bar a[aria-current="true"]'),
+      ogImage: (document.querySelector('meta[property="og:image"]') || {}).content || null,
+      title: document.title || "",
     };
   });
   const contrast = await page.evaluate(contrastAudit);
@@ -215,6 +214,9 @@ for (const [name, path] of PAGES) {
   if (!dom.divs.balanced) pageFailures.push("<div> " + dom.divs.open + " open vs " + dom.divs.close + " close");
   if (dom.railLinks && !dom.anchorsResolve) pageFailures.push("rail anchor does not resolve");
   if (dom.railActiveAtTop) pageFailures.push("rail marks a section at the top of the page");
+  if (!dom.ogImage) pageFailures.push("no og:image — a shared link would show an empty card");
+  if (!dom.title) pageFailures.push("empty document title");
+  ogImages.add(dom.ogImage);
   if (contrast.length) pageFailures.push("contrast: " + contrast.join(" | "));
 
   rows.push({
@@ -246,6 +248,13 @@ for (const [, path] of PAGES) {
 for (const href of links) {
   const r = await request.get(base + href);
   if (r.status() !== 200) failures.push({ page: "links", issues: ["404: " + href] });
+}
+
+/* the social card must actually exist on the server */
+for (const og of ogImages) {
+  if (!og) continue;
+  const r = await request.get(base + og);
+  if (r.status() !== 200) failures.push({ page: "og:image", issues: [og + " → HTTP " + r.status()] });
 }
 await request.dispose();
 

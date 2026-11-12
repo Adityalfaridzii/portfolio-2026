@@ -142,27 +142,45 @@ three states render correctly — motion on, OS reduce-motion, and **JavaScript 
 - Keyboard: first Tab lands on "Skip to content"; focus ring is visible everywhere.
 - Print: 0 reveal elements still faded; `index-print.pdf` and `cv-print.pdf` generated.
 
+## Check it yourself
+
+```bash
+node audit.mjs
+```
+
+Starts its own server on :4199, walks all seven pages at 1440 and 390 px, and exits
+non-zero on any failure. It checks: console and page errors, HTTP status of every
+request, broken images (after forcing lazy ones in), duplicate ids, one `h1` per page,
+horizontal overflow, nested `.decision` cards, `<div>` balance, TOC rail anchors and
+its active state, contrast on every leaf text node, internal links, `og:image`
+presence and reachability, and that the CV still prints white.
+
+Run it before every deploy. It found a fatal unclosed-`<div>` on the QA Dashboard page
+that every other check had passed.
+
 ## Deploy
 
-Static host, no build step, no server-side anything. Upload **only these**:
+Static host, no build step. Upload these:
 
 ```
-index.html
-amb-copilot.html      qa-dashboard.html      automation.html
-traveloka-automation.html                  traveloka-identity.html
-cv.html
+index.html  amb-copilot.html  qa-dashboard.html  automation.html
+traveloka-automation.html  traveloka-identity.html  cv.html
 assets/
+nojekyll equivalent (.nojekyll)  netlify.toml (Netlify only)
 ```
 
-Leave out `_shots/` (screenshots and PDFs, 19 MB), `_lab/` (prototypes and the
-dormant dark skin), `_preview.mjs`, and the `*.md` notes. They are working files,
-not the site.
+Leave out `_shots/`, `_lab/`, `_build/`, `audit.mjs`, `_preview.mjs` and the `*.md`
+notes. They are working files, not the site.
 
-The output of a full audit (7 pages × 2 viewports): 0 console errors, 0 failed
-requests, 0 broken images once lazy images enter the viewport, 0 duplicate ids,
-one `h1` per page, **0 contrast failures**, no horizontal overflow at 390–1440 px,
-anchors landing below the sticky rail, print forced to white, CV still 2 pages.
+* **Netlify** — drag the folder onto app.netlify.com, `netlify.toml` is already here.
+* **Vercel** — `npx vercel --prod` from this folder, framework preset "Other".
+* **GitHub Pages** — push to a repo, Settings → Pages → deploy from `main`, root.
+  `.nojekyll` is committed so folders starting with `_` are served.
+
+**After the first deploy:** replace `content="assets/img/og.png"` in the seven `<head>`
+blocks with the absolute URL (`https://your-domain/assets/img/og.png`). Most crawlers
+resolve a relative path, but absolute is the safe form for a social card.
 
 Known cosmetic issue: on a phone the CV's print button (54 px) is wider than the
-monogram (32 px), so the nav pill sits 11 px left of centre. Fix by hiding the
-button under 720 px, at the cost of losing print access from the phone.
+monogram (32 px), so the nav pill sits 11 px left of centre. Fix by hiding the button
+under 720 px, at the cost of losing print access from the phone.

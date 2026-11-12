@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OG card</title>
+<style>
+  @font-face {
+    font-family: "Archivo";
+    src: url("../assets/fonts/archivo.woff2") format("woff2-variations");
+    font-weight: 400 900;
+    font-stretch: 62% 100%;
+    font-display: block;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+    background-color: #f2f0e9;
+    background-image:
+      repeating-linear-gradient(to right, rgba(20,20,15,.04) 0 1px, transparent 1px 96px),
+      repeating-linear-gradient(to bottom, rgba(20,20,15,.04) 0 1px, transparent 1px 96px);
+    background-position: 64px 0;
+    color: #14140f;
+    font-family: "Archivo", system-ui, sans-serif;
+    display: flex;
+    flex-direction: column;
+    padding: 56px 64px 48px;
+  }
+  .top { display: flex; align-items: center; gap: 16px; padding-bottom: 18px; border-bottom: 1px solid rgba(20,20,15,.15); }
+  .mark {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: #14140f; color: #f2f0e9;
+    display: grid; place-items: center;
+    font-family: "Cascadia Mono", Consolas, monospace;
+    font-size: 15px; letter-spacing: .02em;
+  }
+  .who { font-size: 21px; font-weight: 600; letter-spacing: -.015em; }
+  .role {
+    margin-left: auto;
+    font-family: "Cascadia Mono", Consolas, monospace;
+    font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #6b6860;
+  }
+  h1 {
+    margin-top: 54px;
+    font-size: 84px; font-weight: 700; font-stretch: 94%;
+    letter-spacing: -.045em; line-height: .95;
+  }
+  h1 em { font-style: normal; color: #b23e16; }
+  .figures {
+    margin-top: auto;
+    display: flex; align-items: flex-end; gap: 46px;
+    padding-top: 22px; border-top: 2px solid #14140f;
+  }
+  .f b { display: block; font-size: 30px; font-weight: 700; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .f span {
+    display: block; margin-top: 4px;
+    font-family: "Cascadia Mono", Consolas, monospace;
+    font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #6b6860;
+  }
+  .mail {
+    margin-left: auto; text-align: right;
+    font-family: "Cascadia Mono", Consolas, monospace;
+    font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #57544a;
+  }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="mark">AF</div>
+    <div class="who">Aditya Rahman Al-Faridzi</div>
+    <div class="role">Senior QA Engineer — Test Automation &amp; AI</div>
+  </div>
+
+  <h1>I test the tools<br>that test <em>the money.</em></h1>
+
+  <div class="figures">
+    <div class="f"><b>211</b><span>commits</span></div>
+    <div class="f"><b>823</b><span>unit tests</span></div>
+    <div class="f"><b>102</b><span>UI tests</span></div>
+    <div class="f"><b>190+</b><span>tickets filed</span></div>
+    <div class="mail">adityalfaridzi@gmail.com</div>
+  </div>
+</body>
+</html>
